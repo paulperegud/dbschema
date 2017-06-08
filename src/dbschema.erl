@@ -49,6 +49,7 @@ perform_(Type, MigrationsFolder, #migration{filename=Filename, type = ExtType}=M
     MigrationFile = filename:join([MigrationsFolder, Filename]),
     case ExtType of
         <<"erl">> ->
+            FN = binary_to_list(MigrationFile),
             {ok, Module, Binary} = compile:file(FN, [binary]),
             {module, Module} = code:load_binary(Module, FN, Binary),
             Up = fun Module:up/1,
