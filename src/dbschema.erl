@@ -49,7 +49,9 @@ perform_(Type, MigrationsFolder, #migration{filename=Filename, type = ExtType}=M
     MigrationFile = filename:join([MigrationsFolder, Filename]),
     case ExtType of
         <<"erl">> ->
-            {ok, Module} = compile:file(binary_to_list(MigrationFile)),
+            FN = binary_to_list(MigrationFile),
+            {ok, Module, Binary} = compile:file(FN, [binary]),
+            {module, Module} = code:load_binary(Module, FN, Binary),
             Up = fun Module:up/1,
             Down = fun Module:down/1;
         <<"sql">> ->
